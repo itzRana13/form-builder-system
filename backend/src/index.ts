@@ -12,6 +12,28 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Root route
+app.get('/', (req: Request, res: Response) => {
+  res.json({
+    message: 'Form Builder API Server',
+    version: '1.0.0',
+    endpoints: {
+      'GET /api/form-schema': 'Get form schema',
+      'POST /api/submissions': 'Create a submission',
+      'GET /api/submissions': 'Get paginated submissions',
+      'GET /api/submissions/:id': 'Get a single submission',
+      'PUT /api/submissions/:id': 'Update a submission',
+      'DELETE /api/submissions/:id': 'Delete a submission',
+      'GET /health': 'Health check endpoint'
+    }
+  });
+});
+
+// Health check endpoint
+app.get('/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // GET /api/form-schema
 app.get('/api/form-schema', (req: Request, res: Response) => {
   res.json(formSchema);
@@ -159,6 +181,16 @@ app.delete('/api/submissions/:id', (req: Request, res: Response) => {
     });
   }
   res.json({ success: true });
+});
+
+// 404 handler for unmatched routes
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route not found',
+    path: req.path,
+    method: req.method
+  });
 });
 
 app.listen(PORT, () => {
