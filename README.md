@@ -5,6 +5,7 @@ A full-stack dynamic form builder system with a React frontend and Node.js/Expre
 ## Milestone Completion Status
 
 ### ✅ Milestone 1 - Frontend Development
+
 - [x] Dynamic Form Page with TanStack Form and Query
 - [x] All 8 field types implemented (text, number, select, multi-select, date, textarea, switch)
 - [x] Complete validation rules support
@@ -14,6 +15,7 @@ A full-stack dynamic form builder system with a React frontend and Node.js/Expre
 - [x] View submission details modal
 
 ### ✅ Milestone 2 - Backend Development
+
 - [x] GET /api/form-schema endpoint
 - [x] POST /api/submissions with validation
 - [x] GET /api/submissions with pagination and sorting
@@ -22,6 +24,7 @@ A full-stack dynamic form builder system with a React frontend and Node.js/Expre
 - [x] In-memory data persistence
 
 ### ✅ Bonus Features
+
 - [x] GET /api/submissions/:id - View single submission
 - [x] PUT /api/submissions/:id - Update submission
 - [x] DELETE /api/submissions/:id - Delete submission
@@ -29,6 +32,7 @@ A full-stack dynamic form builder system with a React frontend and Node.js/Expre
 ## Tech Stack
 
 ### Frontend
+
 - **React 19** - UI library
 - **Vite** - Build tool
 - **TypeScript** - Type safety
@@ -39,6 +43,7 @@ A full-stack dynamic form builder system with a React frontend and Node.js/Expre
 - **React Router** - Routing
 
 ### Backend
+
 - **Node.js** - Runtime
 - **Express** - Web framework
 - **TypeScript** - Type safety
@@ -78,21 +83,25 @@ project-root/
 ## Setup and Run Instructions
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 
 ### Backend Setup
 
 1. Navigate to backend directory:
+
 ```bash
 cd backend
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run in development mode:
+
 ```bash
 npm run dev
 ```
@@ -102,16 +111,19 @@ The backend server will start on `http://localhost:3001`
 ### Frontend Setup
 
 1. Navigate to frontend directory:
+
 ```bash
 cd frontend
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Run in development mode:
+
 ```bash
 npm run dev
 ```
@@ -121,9 +133,11 @@ The frontend will start on `http://localhost:3000`
 ## API Endpoints
 
 ### GET /api/form-schema
+
 Returns the Employee Onboarding form schema.
 
 **Response:**
+
 ```json
 {
   "title": "Employee Onboarding",
@@ -133,9 +147,11 @@ Returns the Employee Onboarding form schema.
 ```
 
 ### POST /api/submissions
+
 Accepts and validates form submissions.
 
 **Request Body:**
+
 ```json
 {
   "firstName": "John",
@@ -146,6 +162,7 @@ Accepts and validates form submissions.
 ```
 
 **Success Response (201):**
+
 ```json
 {
   "success": true,
@@ -155,6 +172,7 @@ Accepts and validates form submissions.
 ```
 
 **Error Response (400):**
+
 ```json
 {
   "success": false,
@@ -165,15 +183,18 @@ Accepts and validates form submissions.
 ```
 
 ### GET /api/submissions
+
 Returns paginated and sortable submissions.
 
 **Query Parameters:**
+
 - `page` (default: 1)
 - `limit` (default: 10, max: 100)
 - `sortBy` (default: "createdAt")
 - `sortOrder` (default: "desc", options: "asc" | "desc")
 
 **Response:**
+
 ```json
 {
   "submissions": [...],
@@ -193,6 +214,7 @@ Returns paginated and sortable submissions.
 ## Features
 
 ### Form Page
+
 - Dynamic form rendering based on schema
 - All 8 field types supported
 - Real-time validation with error messages
@@ -202,6 +224,7 @@ Returns paginated and sortable submissions.
 - Automatic navigation to submissions page after successful submission
 
 ### Submissions Page
+
 - Server-side pagination (10/20/50 items per page)
 - Server-side sorting by creation date (asc/desc)
 - View submission details in modal
@@ -236,6 +259,7 @@ None at this time.
 ## Future Enhancements
 
 Potential improvements:
+
 - CSV export functionality
 - Search/filter submissions
 - Edit submissions from the table
@@ -248,4 +272,3 @@ Potential improvements:
 ## License
 
 ISC
-
