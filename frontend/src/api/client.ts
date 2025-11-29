@@ -1,8 +1,30 @@
 import { FormSchema, SubmissionResponse, PaginatedSubmissions, Submission } from '../types';
 
 // Use VITE_API_URL when defined (Vercel/production), otherwise default to Render backend URL
-const API_BASE_URL =
-  (import.meta as any).env?.VITE_API_URL || 'https://form-builder-system.onrender.com/api';
+// Vite replaces import.meta.env at build time, so we need to handle undefined/empty strings
+const getApiBaseUrl = (): string => {
+  // Access the env variable - Vite will replace this at build time
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  
+  // Check if it's a valid non-empty string
+  if (envUrl && typeof envUrl === 'string') {
+    const trimmed = envUrl.trim();
+    if (trimmed !== '' && trimmed !== 'undefined' && trimmed.startsWith('http')) {
+      // Ensure API_BASE_URL ends with /api (fetch calls append paths like /form-schema, /submissions)
+      return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+    }
+  }
+  
+  // Default fallback to Render backend
+  return 'https://form-builder-system.onrender.com/api';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+// Debug log in development (will be removed in production build)
+if ((import.meta as any).env?.DEV) {
+  console.log('API_BASE_URL:', API_BASE_URL);
+}
 
 export async function fetchFormSchema(): Promise<FormSchema> {
   const response = await fetch(`${API_BASE_URL}/form-schema`);

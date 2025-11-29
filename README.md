@@ -2,6 +2,19 @@
 
 A full-stack dynamic form builder system with a React frontend and Node.js/Express backend.
 
+## 🚀 Live Demo
+
+**Frontend:** [https://formbuilder-ieg47w4el-itzrana13s-projects.vercel.app](https://formbuilder-ieg47w4el-itzrana13s-projects.vercel.app)
+
+- [Form Page](https://formbuilder-ieg47w4el-itzrana13s-projects.vercel.app/)
+- [Submissions Page](https://formbuilder-ieg47w4el-itzrana13s-projects.vercel.app/submissions)
+
+**Backend API:** [https://form-builder-system.onrender.com](https://form-builder-system.onrender.com)
+
+- [API Base URL](https://form-builder-system.onrender.com/api)
+- [Form Schema Endpoint](https://form-builder-system.onrender.com/api/form-schema)
+- [Health Check](https://form-builder-system.onrender.com/health)
+
 ## Milestone Completion Status
 
 ### ✅ Milestone 1 - Frontend Development
