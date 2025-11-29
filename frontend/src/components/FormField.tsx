@@ -1,25 +1,43 @@
-import { useFormContext } from '@tanstack/react-form';
+import React from 'react';
+import { FieldApi, FormApi } from '@tanstack/react-form';
 import { FormField as FormFieldType } from '../types';
 import Input from './ui/Input';
 import Textarea from './ui/Textarea';
 import Select from './ui/Select';
+import MultiSelect from './ui/MultiSelect';
 import Switch from './ui/Switch';
 import Label from './ui/Label';
 
 interface FormFieldProps {
   field: FormFieldType;
+  form: FormApi<Record<string, any>, undefined>;
+  departmentSkills?: Record<string, string[]>;
+  openDropdownId?: string | null;
+  setOpenDropdownId?: (id: string | null) => void;
 }
 
-export default function FormField({ field }: FormFieldProps) {
-  const form = useFormContext();
+export default function FormField({ field, form, departmentSkills, openDropdownId, setOpenDropdownId }: FormFieldProps) {
 
-  return (
-    <form.Field
-      name={field.id}
-      validators={{
-        onChange: ({ value }) => {
+  // Get dynamic options for skills based on department
+  const departmentValue = form.useStore((state: { values: Record<string, any> }) => state.values.department);
+  const dynamicOptions = React.useMemo(() => {
+    if (field.id === 'skills' && departmentSkills && departmentValue) {
+      return departmentSkills[departmentValue] || field.options || [];
+    }
+    return field.options || [];
+  }, [field.id, field.options, departmentSkills, departmentValue]);
+
+
+  // Validation function that uses reactive departmentValue
+  // Recreate when department changes to ensure it uses latest department
+  const validateValue = React.useCallback((value: any) => {
           const validation = field.validation;
           if (!validation) return undefined;
+
+    // Always get the latest department value at validation time
+    // Prioritize reactive departmentValue from useStore (always up-to-date)
+    // Fallback to form.getFieldValue if departmentValue is not available
+    const currentDepartment = departmentValue || form.getFieldValue('department') || '';
 
           // Required validation
           if (validation.required) {
@@ -97,13 +115,38 @@ export default function FormField({ field }: FormFieldProps) {
             if (!Array.isArray(value)) {
               return `${field.label} must be an array`;
             }
-            if (field.options) {
+      // For skills field, validate against department-specific options
+      if (field.id === 'skills' && departmentSkills) {
+        // If department is not selected, don't validate skills options yet
+        // (department selection will be validated separately)
+        if (!currentDepartment || currentDepartment === '') {
+          // Skip options validation if no department is selected
+          // But still check minSelected/maxSelected
+        } else if (departmentSkills[currentDepartment]) {
+          // Validate against department-specific skills
+          const validOptions = departmentSkills[currentDepartment];
+          if (validOptions && validOptions.length > 0) {
+            for (const item of value) {
+              if (!validOptions.includes(item)) {
+                return `${field.label} contains invalid options`;
+              }
+            }
+          }
+        } else {
+          // Department is set but not found in departmentSkills (shouldn't happen, but handle it)
+          // Don't return error here, just skip validation
+        }
+      } else {
+        // For other multi-select fields, use field.options
+        if (field.options && field.options.length > 0) {
               for (const item of value) {
                 if (!field.options.includes(item)) {
                   return `${field.label} contains invalid options`;
                 }
               }
             }
+      }
+      // Check minSelected/maxSelected for all multi-select fields
             if (validation.minSelected !== undefined && value.length < validation.minSelected) {
               return `${field.label} must have at least ${validation.minSelected} selection(s)`;
             }
@@ -113,10 +156,17 @@ export default function FormField({ field }: FormFieldProps) {
           }
 
           return undefined;
-        },
+  }, [field, departmentSkills, form, departmentValue]); // Include departmentValue to recreate when it changes
+
+  return (
+    <form.Field
+      name={field.id}
+      validators={{
+        onChange: ({ value }: { value: any }) => validateValue(value),
+        onBlur: ({ value }: { value: any }) => validateValue(value),
       }}
     >
-      {(fieldState) => (
+      {(fieldState: FieldApi<any, any, undefined, any, any>) => (
         <div className="space-y-2">
           <Label htmlFor={field.id}>
             {field.label}
@@ -174,38 +224,50 @@ export default function FormField({ field }: FormFieldProps) {
             <Select
               id={field.id}
               value={fieldState.state.value || ''}
-              onChange={(e) => fieldState.handleChange(e.target.value)}
+              onChange={(value) => {
+                fieldState.handleChange(value);
+                // Reset skills when department changes
+                if (field.id === 'department') {
+                  form.setFieldValue('skills', []);
+                }
+                // Close dropdown after selection
+                if (setOpenDropdownId) {
+                  setOpenDropdownId(null);
+                }
+              }}
               onBlur={fieldState.handleBlur}
               className={fieldState.state.meta.errors.length > 0 ? 'border-red-500' : ''}
-            >
-              <option value="">{field.placeholder || 'Select an option'}</option>
-              {field.options?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Select>
+              options={[
+                { value: '', label: field.placeholder || 'Select an option' },
+                ...(field.options?.map((opt) => ({ value: opt, label: opt })) || [])
+              ]}
+              isOpen={openDropdownId === field.id}
+              onOpenChange={(open) => {
+                if (setOpenDropdownId) {
+                  setOpenDropdownId(open ? field.id : null);
+                }
+              }}
+            />
           )}
 
           {field.type === 'multi-select' && (
-            <Select
+            <MultiSelect
               id={field.id}
-              multiple
+              options={dynamicOptions}
               value={fieldState.state.value || []}
-              onChange={(e) => {
-                const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+              onChange={(selected) => {
                 fieldState.handleChange(selected);
               }}
               onBlur={fieldState.handleBlur}
               className={fieldState.state.meta.errors.length > 0 ? 'border-red-500' : ''}
-              size={Math.min(field.options?.length || 5, 5)}
-            >
-              {field.options?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Select>
+              placeholder={field.placeholder}
+              isOpen={openDropdownId === field.id}
+              onOpenChange={(open) => {
+                if (setOpenDropdownId) {
+                  setOpenDropdownId(open ? field.id : null);
+                }
+              }}
+            />
           )}
 
           {field.type === 'switch' && (
@@ -219,7 +281,7 @@ export default function FormField({ field }: FormFieldProps) {
             </div>
           )}
 
-          {fieldState.state.meta.errors.length > 0 && (
+          {fieldState.state.meta.errors.length > 0 && fieldState.state.meta.isTouched && (
             <p className="text-sm text-red-500">{fieldState.state.meta.errors[0]}</p>
           )}
         </div>

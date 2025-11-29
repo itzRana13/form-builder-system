@@ -1,5 +1,15 @@
 import { FormSchema } from './types';
 
+
+export const departmentSkills: Record<string, string[]> = {
+  Engineering: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'Go', 'SQL', 'Docker', 'Kubernetes'],
+  Marketing: ['SEO', 'SEM', 'Content Marketing', 'Social Media', 'Analytics', 'Email Marketing', 'PPC', 'Google Ads'],
+  Sales: ['CRM', 'Negotiation', 'Lead Generation', 'Client Relations', 'Salesforce', 'Cold Calling', 'Presentation', 'Closing'],
+  HR: ['Recruitment', 'Employee Relations', 'Performance Management', 'HRIS', 'Compensation', 'Training', 'Compliance', 'Onboarding'],
+  Finance: ['Accounting', 'Financial Analysis', 'Excel', 'QuickBooks', 'Tax Preparation', 'Auditing', 'Budgeting', 'Forecasting'],
+  Operations: ['Process Improvement', 'Supply Chain', 'Project Management', 'Quality Control', 'Logistics', 'Vendor Management', 'Lean', 'Six Sigma']
+};
+
 export const formSchema: FormSchema = {
   title: 'Employee Onboarding',
   description: 'Please fill out the following information to complete your onboarding process.',
@@ -74,7 +84,8 @@ export const formSchema: FormSchema = {
       label: 'Skills',
       type: 'multi-select',
       placeholder: 'Select your skills',
-      options: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'Go', 'SQL'],
+      // Options are dynamic based on selected department (see departmentSkills mapping)
+      options: [], 
       validation: {
         required: true,
         minSelected: 1,

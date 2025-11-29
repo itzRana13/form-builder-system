@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
-import { formSchema } from './schema';
+import { formSchema, departmentSkills } from './schema';
 import { validateSubmission } from './validation';
 import { storage } from './storage';
 import { Submission, SubmissionResponse, PaginatedSubmissions } from './types';
@@ -36,7 +36,10 @@ app.get('/health', (req: Request, res: Response) => {
 
 // GET /api/form-schema
 app.get('/api/form-schema', (req: Request, res: Response) => {
-  res.json(formSchema);
+  res.json({
+    ...formSchema,
+    departmentSkills
+  });
 });
 
 // POST /api/submissions

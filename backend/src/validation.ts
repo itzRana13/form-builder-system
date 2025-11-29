@@ -1,4 +1,5 @@
 import { FormSchema, ValidationRule, FieldType } from './types';
+import { departmentSkills } from './schema';
 
 export function validateSubmission(data: Record<string, any>, schema: FormSchema): Record<string, string> {
   const errors: Record<string, string> = {};
@@ -40,7 +41,15 @@ export function validateSubmission(data: Record<string, any>, schema: FormSchema
         validateSelectField(field.id, value, field.options, errors, field.label);
         break;
       case 'multi-select':
-        validateMultiSelectField(field.id, value, validation, field.options, errors, field.label);
+        // For skills field, use department-specific options
+        let validOptions = field.options;
+        if (field.id === 'skills' && departmentSkills) {
+          const selectedDepartment = data['department'];
+          if (selectedDepartment && departmentSkills[selectedDepartment]) {
+            validOptions = departmentSkills[selectedDepartment];
+          }
+        }
+        validateMultiSelectField(field.id, value, validation, validOptions, errors, field.label);
         break;
       case 'switch':
         if (typeof value !== 'boolean') {

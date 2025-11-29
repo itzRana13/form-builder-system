@@ -25,6 +25,7 @@ export interface FormSchema {
   title: string;
   description: string;
   fields: FormField[];
+  departmentSkills?: Record<string, string[]>;
 }
 
 export interface Submission {

@@ -4,7 +4,7 @@ Frontend React application for the dynamic form builder system.
 
 ## Tech Stack
 
-- React 18
+- React 19
 - Vite
 - TypeScript
 - TanStack Query (React Query)

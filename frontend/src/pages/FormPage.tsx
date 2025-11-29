@@ -1,3 +1,4 @@
+import React from 'react';
 import { useForm } from '@tanstack/react-form';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
@@ -18,9 +19,17 @@ export default function FormPage() {
 
   const mutation = useMutation({
     mutationFn: submitForm,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data.success) {
+        // Reset form after successful submission
+        form.reset();
+        // Invalidate queries to refresh submissions list
       queryClient.invalidateQueries({ queryKey: ['submissions'] });
+        // Show success message briefly, then navigate
+        setTimeout(() => {
       navigate('/submissions');
+        }, 2000);
+      }
     },
   });
 
@@ -30,6 +39,20 @@ export default function FormPage() {
       mutation.mutate(value);
     },
   });
+
+  // Track which dropdown is open (only one at a time)
+  const [openDropdownId, setOpenDropdownId] = React.useState<string | null>(null);
+
+  // Watch department changes to update skills
+  const departmentValue = form.useStore((state) => state.values.department);
+  
+  // Reset skills when department changes
+  React.useEffect(() => {
+    if (schema?.departmentSkills) {
+      // Reset skills whenever department changes (including when cleared)
+      form.setFieldValue('skills', []);
+    }
+  }, [departmentValue, schema, form]);
 
   if (isLoading) {
     return (
@@ -57,64 +80,75 @@ export default function FormPage() {
   }
 
   return (
-    <form.Provider>
-      <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg shadow-sm border p-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{schema.title}</h1>
-          <p className="text-gray-600 mb-8">{schema.description}</p>
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-lg shadow-sm border p-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">{schema.title}</h1>
+        <p className="text-gray-600 mb-8">{schema.description}</p>
 
-          {mutation.isError && (
-            <Alert variant="error" className="mb-6">
-              {mutation.error instanceof Error
-                ? mutation.error.message
-                : 'Failed to submit form. Please check your inputs and try again.'}
-            </Alert>
-          )}
+        {mutation.isError && (
+          <Alert variant="error" className="mb-6">
+            {mutation.error instanceof Error
+              ? mutation.error.message
+              : 'Failed to submit form. Please check your inputs and try again.'}
+          </Alert>
+        )}
 
-          {mutation.data && !mutation.data.success && mutation.data.errors && (
-            <Alert variant="error" className="mb-6">
-              <div className="space-y-1">
-                {Object.entries(mutation.data.errors).map(([field, error]) => (
-                  <div key={field}>
-                    <strong>{field}:</strong> {error}
-                  </div>
-                ))}
-              </div>
-            </Alert>
-          )}
+        {mutation.data && mutation.data.success && (
+          <Alert variant="success" className="mb-6">
+            Form submitted successfully! Redirecting to submissions page...
+          </Alert>
+        )}
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              form.handleSubmit();
-            }}
-            className="space-y-6"
-          >
-            {schema.fields.map((field) => (
-              <FormField key={field.id} field={field} />
-            ))}
-
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="submit"
-                disabled={mutation.isPending}
-                className="flex-1"
-              >
-                {mutation.isPending ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Submitting...
-                  </>
-                ) : (
-                  'Submit'
-                )}
-              </Button>
+        {mutation.data && !mutation.data.success && mutation.data.errors && (
+          <Alert variant="error" className="mb-6">
+            <div className="space-y-1">
+              {Object.entries(mutation.data.errors).map(([field, error]) => (
+                <div key={field}>
+                  <strong>{field}:</strong> {error}
+                </div>
+              ))}
             </div>
-          </form>
-        </div>
+          </Alert>
+        )}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+          className="space-y-6"
+        >
+          {schema.fields.map((field) => (
+            <FormField 
+              key={field.id} 
+              field={field} 
+              form={form} 
+              departmentSkills={schema.departmentSkills}
+              openDropdownId={openDropdownId}
+              setOpenDropdownId={setOpenDropdownId}
+            />
+          ))}
+
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="flex-1"
+            >
+              {mutation.isPending ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Submitting...
+                </>
+              ) : (
+                'Submit'
+              )}
+            </Button>
+          </div>
+        </form>
       </div>
-    </form.Provider>
+    </div>
   );
 }
 
