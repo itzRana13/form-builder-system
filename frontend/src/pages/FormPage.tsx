@@ -81,9 +81,9 @@ export default function FormPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white rounded-lg shadow-sm border p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{schema.title}</h1>
-        <p className="text-gray-600 mb-8">{schema.description}</p>
+      <div className="bg-surface-light dark:bg-surface-dark rounded-lg shadow-sm border border-gray-200 dark:border-slate-800 p-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50 mb-2">{schema.title}</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-8">{schema.description}</p>
 
         {mutation.isError && (
           <Alert variant="error" className="mb-6">

@@ -86,8 +86,22 @@ app.get('/api/submissions', (req: Request, res: Response) => {
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 10));
     const sortBy = req.query.sortBy as string || 'createdAt';
     const sortOrder = req.query.sortOrder as string || 'desc';
+    const search = (req.query.search as string | undefined)?.toLowerCase().trim() || '';
 
-    const allSubmissions = storage.getAll();
+    let allSubmissions = storage.getAll();
+
+    // Filter by search term across id, createdAt and data fields
+    if (search) {
+      allSubmissions = allSubmissions.filter((submission) => {
+        if (submission.id.toLowerCase().includes(search)) return true;
+        if (submission.createdAt.toLowerCase().includes(search)) return true;
+
+        const values = Object.values(submission.data ?? {});
+        return values.some((val) =>
+          String(val).toLowerCase().includes(search)
+        );
+      });
+    }
 
     // Sort submissions
     let sortedSubmissions = [...allSubmissions];
