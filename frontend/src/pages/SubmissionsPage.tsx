@@ -135,7 +135,6 @@ export default function SubmissionsPage() {
       const all = await fetchSubmissions(1, data.total || 1000, 'createdAt', sortOrder, debouncedSearch);
       if (!all.submissions.length) return;
 
-      const headerFields = ['id', 'createdAt'];
       const fieldIds = schema?.fields.map((f) => f.id) ?? [];
 
       const header = ['Submission ID', 'Created At', ...fieldIds.map((id) => id)].join(',');
