@@ -63,7 +63,7 @@ const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
       <div className="relative" ref={ref} data-multiselect-id={id}>
         <div
           className={cn(
-            'min-h-[40px] w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm cursor-pointer flex items-center flex-wrap gap-2',
+            'min-h-[40px] w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm cursor-pointer flex items-center flex-wrap gap-2',
             className
           )}
           onClick={(e) => {
@@ -78,37 +78,37 @@ const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
           }}
         >
           {value.length === 0 ? (
-            <span className="text-gray-400">{placeholder || 'Select options'}</span>
+            <span className="text-gray-400 dark:text-gray-500">{placeholder || 'Select options'}</span>
           ) : (
             <>
               {displayItems.map((item) => (
                 <span
                   key={item}
-                  className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs"
+                  className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 px-2 py-1 rounded text-xs"
                 >
                   {item}
                   <button
                     type="button"
                     onClick={(e) => handleRemove(item, e)}
-                    className="hover:bg-blue-200 rounded-full p-0.5"
+                    className="hover:bg-blue-200 dark:hover:bg-blue-700 rounded-full p-0.5"
                   >
                     <X className="h-3 w-3" />
                   </button>
                 </span>
               ))}
               {remainingCount > 0 && (
-                <span className="inline-flex items-center bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                <span className="inline-flex items-center bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-100 px-2 py-1 rounded text-xs">
                   +{remainingCount}
                 </span>
               )}
             </>
           )}
-          <ChevronDown className={cn('h-4 w-4 ml-auto text-gray-400 transition-transform', isOpen && 'rotate-180')} />
+          <ChevronDown className={cn('h-4 w-4 ml-auto text-gray-400 dark:text-gray-500 transition-transform', isOpen && 'rotate-180')} />
         </div>
 
         {isOpen && (
           <div 
-            className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto"
+            className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-md shadow-lg max-h-60 overflow-auto"
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
           >
@@ -116,7 +116,7 @@ const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
               {options.map((option) => (
                 <label
                   key={option}
-                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-2 rounded"
+                  className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 p-2 rounded"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <input
@@ -127,9 +127,9 @@ const MultiSelect = forwardRef<HTMLDivElement, MultiSelectProps>(
                       handleToggle(option);
                     }}
                     onClick={(e) => e.stopPropagation()}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-slate-600 dark:bg-slate-700 dark:checked:bg-blue-600 rounded cursor-pointer"
                   />
-                  <span className="text-sm text-gray-700">{option}</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-200">{option}</span>
                 </label>
               ))}
             </div>

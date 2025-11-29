@@ -24,10 +24,10 @@ export default function FormPage() {
         // Reset form after successful submission
         form.reset();
         // Invalidate queries to refresh submissions list
-      queryClient.invalidateQueries({ queryKey: ['submissions'] });
+        queryClient.invalidateQueries({ queryKey: ['submissions'] });
         // Show success message briefly, then navigate
         setTimeout(() => {
-      navigate('/submissions');
+          navigate('/submissions');
         }, 2000);
       }
     },
@@ -45,7 +45,7 @@ export default function FormPage() {
 
   // Watch department changes to update skills
   const departmentValue = form.useStore((state) => state.values.department);
-  
+
   // Reset skills when department changes
   React.useEffect(() => {
     if (schema?.departmentSkills) {
@@ -120,10 +120,10 @@ export default function FormPage() {
           className="space-y-6"
         >
           {schema.fields.map((field) => (
-            <FormField 
-              key={field.id} 
-              field={field} 
-              form={form} 
+            <FormField
+              key={field.id}
+              field={field}
+              form={form}
               departmentSkills={schema.departmentSkills}
               openDropdownId={openDropdownId}
               setOpenDropdownId={setOpenDropdownId}

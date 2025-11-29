@@ -22,16 +22,13 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         <select
           ref={ref}
           className={cn(
-            'flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-10 w-full rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-gray-900 dark:text-gray-100 ring-offset-white dark:ring-offset-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
           value={value}
           onChange={(e) => {
             if (onChange) {
               onChange(e.target.value);
-            }
-            if (props.onChange) {
-              props.onChange(e);
             }
           }}
           {...props}
@@ -41,7 +38,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       );
     }
 
-      // Custom dropdown for better UX
+    // Custom dropdown for better UX
     if (options) {
       const selectedOption = options.find((opt) => opt.value === value);
       let selectedLabel = 'Select an option';
@@ -80,7 +77,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <button
             type="button"
             className={cn(
-              'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+              'flex h-10 w-full items-center justify-between rounded-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm ring-offset-white dark:ring-offset-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
               className
             )}
             onClick={(e) => {
@@ -91,19 +88,19 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
               setTimeout(() => setIsOpen(false), 200);
             }}
           >
-            <span className={value ? 'text-gray-900' : 'text-gray-400'}>{selectedLabel}</span>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform', isOpen && 'rotate-180')} />
+            <span className={value ? 'text-gray-900 dark:text-gray-100' : 'text-gray-400 dark:text-gray-500'}>{selectedLabel}</span>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 dark:text-gray-500 transition-transform', isOpen && 'rotate-180')} />
           </button>
 
           {isOpen && (
-            <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+            <div className="absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-md shadow-lg max-h-60 overflow-auto">
               {options.map((option) => (
                 <button
                   key={option.value}
                   type="button"
                   className={cn(
-                    'w-full text-left px-3 py-2 text-sm hover:bg-gray-50',
-                    value === option.value && 'bg-blue-50 text-blue-600'
+                    'w-full text-left px-3 py-2 text-sm text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-slate-700',
+                    value === option.value && 'bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
                   )}
                   onClick={() => {
                     if (onChange) {

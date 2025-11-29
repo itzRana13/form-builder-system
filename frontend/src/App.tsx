@@ -33,21 +33,19 @@ function App() {
             <div className="flex">
               <Link
                 to="/"
-                className={`inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium ${
-                  location.pathname === '/'
+                className={`inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium ${location.pathname === '/'
                     ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 Form
               </Link>
               <Link
                 to="/submissions"
-                className={`inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium ${
-                  location.pathname === '/submissions'
+                className={`inline-flex items-center px-4 py-2 border-b-2 text-sm font-medium ${location.pathname === '/submissions'
                     ? 'border-blue-500 text-blue-600 dark:text-blue-400'
                     : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 Submissions
               </Link>
